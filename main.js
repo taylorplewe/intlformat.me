@@ -48,22 +48,15 @@ const selectContentEditable = el => {
     sel.addRange(range);
 }
 
-const localeEl = document.querySelector('#locale');
-localeEl.addEventListener('click', () => {
-	if (!localeEl.hasAttribute('contenteditable')) {
-		localeEl.setAttribute('contenteditable', '');
-		selectContentEditable(localeEl);
-	}
-});
-localeEl.addEventListener('keydown', e => applyInput(e, 'locale', localeEl));
-localeEl.addEventListener('blur', e => applyInput(e, 'locale', localeEl));
-localeEl.textContent = formatter.locale;
-
-const dateEl = document.querySelector('#date');
-dateEl.addEventListener('click', () => {
-	dateEl.setAttribute('contenteditable', '');
-	selectContentEditable(dateEl);
-});
-dateEl.addEventListener('keydown', e => applyInput(e, 'dateString', dateEl));
-dateEl.addEventListener('blur', e => applyInput(e, 'dateString', dateEl));
-dateEl.textContent = formatter.dateString;
+for (const el of document.querySelectorAll('.text-input')) {
+	const prop = el.getAttribute('prop');
+	el.addEventListener('click', () => {
+		if (!el.hasAttribute('contenteditable')) {
+			el.setAttribute('contenteditable', '');
+			selectContentEditable(el);
+		}
+	});
+	el.addEventListener('keydown', e => applyInput(e, prop, el));
+	el.addEventListener('blur', e => applyInput(e, prop, el));
+	el.textContent = formatter[prop];
+}
