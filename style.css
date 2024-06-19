@@ -111,3 +111,9 @@ code[contenteditable] {
 	flex-direction: column;
 	gap: 8px;
 }
+
+@media screen and (max-width: 728px) {
+	main {
+		grid-template-columns: auto;
+	}
+}
