@@ -8,20 +8,11 @@
 	--col-border-light: #eee;
 }
 
-h1, pre {
-	margin: 0;
-}
-
-h1 {
-	color: var(--col-text-faint);
-}
-
 body {
 	background-color: var(--col-bg);
 	font-family: 'Red Hat Mono', monospace;
 	color: var(--col-text-light);
 }
-
 main {
 	position: absolute;
 	top: 0;
@@ -33,7 +24,6 @@ main {
 	grid-template-columns: 60% auto;
 	gap: 16px;
 }
-
 article {
 	background-color: var(--col-subsection);
 	border-radius: 16px;
@@ -47,13 +37,46 @@ article:has(#output) {
 	align-items: center;
 	justify-content: center;
 }
-
+h1, pre {
+	margin: 0;
+}
+h1 {
+	color: var(--col-text-faint);
+}
 code {
 	font-size: 16pt;
+}
+select {
+	border: none;
+	background-color: var(--col-input-bg);
+	color: var(--col-text-light);
+	padding: 8px;
+	cursor: pointer;
+	border-radius: 4px;
+	font-size: 16pt;
+	font-family: 'Red Hat Mono', monospace;
+	width: 200px;
+}
+option {
+	cursor: pointer;
 }
 
 .flex-grow {
 	flex-grow: 1;
+}
+.text-input {
+	background-color: var(--col-input-bg);
+	padding: 8px;
+	border-radius: 4px;
+}
+.text-input:not([contenteditable]) {
+	cursor: pointer;
+}
+.labelled-input {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	max-width: 512px;
 }
 code[contenteditable] {
     box-shadow: inset 0 0 1px var(--col-border-light);
@@ -79,11 +102,12 @@ code[contenteditable] {
 	flex-direction: column;
 	gap: 16px;
 }
-.text-input {
-	background-color: var(--col-input-bg);
-	padding: 8px;
-	border-radius: 4px;
+#options label {
+	font-size: 14pt;
+	color: var(--col-text-faint);
 }
-.text-input:not([contenteditable]) {
-	cursor: pointer;
+#options-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }

@@ -127,20 +127,24 @@ export default {
 	},
 	dateTimeComponents: {
 		weekday: [
+			'undefined',
 			'long',
 			'short',
 			'narrow',
 		],
 		era: [
+			'undefined',
 			'long',
 			'short',
 			'narrow',
 		],
 		year: [
+			'undefined',
 			'numeric',
 			'2-digit',
 		],
 		month: [
+			'undefined',
 			'numeric',
 			'2-digit',
 			'long',
@@ -148,32 +152,39 @@ export default {
 			'narrow',
 		],
 		day: [
+			'undefined',
 			'numeric',
 			'2-digit',
 		],
 		dayPeriod: [
+			'undefined',
 			'narrow',
 			'short',
 			'long',
 		],
 		hour: [
+			'undefined',
 			'numeric',
 			'2-digit',
 		],
 		minute: [
+			'undefined',
 			'numeric',
 			'2-digit',
 		],
 		second: [
+			'undefined',
 			'numeric',
 			'2-digit',
 		],
 		fractionalSecondDigits: [
+			'undefined',
 			1,
 			2,
 			3,
 		],
 		timeZoneName: [
+			'undefined',
 			'long',
 			'short',
 			'shortOffset',
@@ -182,6 +193,7 @@ export default {
 			'longGeneric',
 		],
 		formatMatcher: [
+			'undefined',
 			'basic',
 			'best fit',
 		],
