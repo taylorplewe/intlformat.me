@@ -23,6 +23,7 @@ for (const entry of Object.entries(OPTIONS.dateTimeComponents)) {
 		optionEl.textContent = option;
 		optionEl.value = option;
 		selectEl.appendChild(optionEl);
+		selectEl.className = 'input';
 	}
 	selectEl.addEventListener('change', e => {
 		formatter.options[entry[0]] = e.target.value;
