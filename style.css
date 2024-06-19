@@ -1,0 +1,19 @@
+:root {
+	--col-bg: #222;
+	--col-text-light: #eee;
+	--col-text-mid: #aaa;
+	--col-text-faint: #777;
+}
+
+body {
+	background: var(--col-bg);
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	color: var(--col-text-light);
+}
+
+#expression {
+	color: var(--col-text-faint);
+}
+#output {
+	color: var(--col-text-light);
+}
