@@ -1,19 +1,89 @@
 :root {
 	--col-bg: #222;
+	--col-subsection: #2b2b2b;
+	--col-input-bg: #333;
 	--col-text-light: #eee;
 	--col-text-mid: #aaa;
 	--col-text-faint: #777;
+	--col-border-light: #eee;
+}
+
+h1, pre {
+	margin: 0;
+}
+
+h1 {
+	color: var(--col-text-faint);
 }
 
 body {
-	background: var(--col-bg);
-	font-family: Georgia, 'Times New Roman', Times, serif;
+	background-color: var(--col-bg);
+	font-family: 'Red Hat Mono', monospace;
 	color: var(--col-text-light);
+}
+
+main {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	padding: 16px;
+	display: grid;
+	grid-template-columns: 60% auto;
+	gap: 16px;
+}
+
+article {
+	background-color: var(--col-subsection);
+	border-radius: 16px;
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+article:has(#output) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+code {
+	font-size: 16pt;
+}
+
+.flex-grow {
+	flex-grow: 1;
+}
+code[contenteditable] {
+    box-shadow: inset 0 0 1px var(--col-border-light);
+	background-color: transparent;
+	cursor: text;
 }
 
 #expression {
 	color: var(--col-text-faint);
 }
 #output {
+	font-size: 42pt;
 	color: var(--col-text-light);
+}
+
+#preview {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+#controls {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+.text-input {
+	background-color: var(--col-input-bg);
+	padding: 8px;
+	border-radius: 4px;
+}
+.text-input:not([contenteditable]) {
+	cursor: pointer;
 }

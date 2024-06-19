@@ -4,9 +4,31 @@
 		<title>intlformat.me</title>
 		<link rel="stylesheet" href="style.css">
 		<script src="main.js" type="module"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<h1 id="expression"></h1>
-		<h1 id="output"></h1>
+		<main>
+			<div id="preview">
+				<article>
+					<pre>
+<code id="expression"></code>
+					</pre>
+				</article>
+				<article class="flex-grow">
+					<code id="output"></code>
+				</article>
+			</div>
+			<div id="controls">
+				<article>
+					<h1>locale</h1>
+					<code id="locale" class="text-input"></code>
+				</article>
+				<article class="flex-grow">
+					<h1>options</h1>
+				</article>
+			</div>
+		</main>
 	</body>
 </html>
