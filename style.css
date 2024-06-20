@@ -7,6 +7,8 @@
 	--col-text-mid: #aaa;
 	--col-text-faint: #777;
 	--col-border-light: #eee;
+	--col-fg-invalid: #b44;
+	--col-bg-invalid: #533;
 }
 
 body {
@@ -40,7 +42,7 @@ article:has(#output) {
 	align-items: center;
 	justify-content: center;
 }
-h1, pre {
+h1, pre, p {
 	margin: 0;
 }
 h1 {
@@ -81,6 +83,12 @@ option {
 }
 .input:not([contenteditable]):hover {
 	background-color: var(--col-input-bg-hover);
+}
+.input[invalid]:not([contenteditable]) {
+	background-color: var(--col-bg-invalid);
+}
+.error-message {
+	color: var(--col-fg-invalid);
 }
 code[contenteditable] {
     box-shadow: inset 0 0 1px var(--col-border-light);

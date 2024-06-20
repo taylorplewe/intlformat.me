@@ -4,6 +4,10 @@ import OPTIONS from './options.js';
 const els = {
 	expressionEl: document.querySelector('#expression'),
 	outputEl: document.querySelector('#output'),
+	dateEl: document.querySelector('#date'),
+	localeEl: document.querySelector('#locale'),
+	dateErrorEl: document.querySelector('#date-error'),
+	localeErrorEl: document.querySelector('#locale-error'),
 };
 
 const formatter = new Formatter(els);

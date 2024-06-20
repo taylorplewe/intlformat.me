@@ -20,6 +20,10 @@ export default class Formatter {
 			});
 		}
 		this.dateString = '07/02/1997';
+		this.errorMessages = {
+			locale: '',
+			date: '',
+		};
 		this.updateEls();
 	}
 
@@ -36,7 +40,22 @@ export default class Formatter {
 	}
 
 	get outputText() {
-		return Intl.DateTimeFormat(this._locale, this._options).format(new Date(this.dateString || null));
+		let formatter, output = '';
+		try {
+			this.errorMessages.locale = '';
+			formatter = Intl.DateTimeFormat(this._locale, this._options);
+		} catch ({ message }) {
+			this.errorMessages.locale = message;
+			return '';
+		}
+		try {
+			this.errorMessages.date = '';
+			output = formatter.format(new Date(this.dateString || null));
+		} catch ({ message }) {
+			this.errorMessages.date = message;
+			return '';
+		}
+		return output;
 	}
 
 	get locale() {
@@ -51,7 +70,24 @@ export default class Formatter {
 	}
 
 	updateEls() {
+		this.els.dateErrorEl.style.display = 'none';
+		this.els.localeErrorEl.style.display = 'none';
+		this.els.dateEl.removeAttribute('invalid');
+		this.els.localeEl.removeAttribute('invalid');
+
 		this.els.expressionEl.textContent = this.expressionText;
 		this.els.outputEl.textContent = this.outputText;
+
+		// error handling
+		if (this.errorMessages.date) {
+			this.els.dateEl.setAttribute('invalid', '');
+			this.els.dateErrorEl.style.display = 'block';
+			this.els.dateErrorEl.textContent = this.errorMessages.date;
+		}
+		if (this.errorMessages.locale.length) {
+			this.els.localeEl.setAttribute('invalid', '');
+			this.els.localeErrorEl.style.display = 'block';
+			this.els.localeErrorEl.textContent = this.errorMessages.locale;
+		}
 	}
 }
