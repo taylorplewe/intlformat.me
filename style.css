@@ -15,7 +15,6 @@ body {
 	background-color: var(--col-bg);
 	font-family: 'Red Hat Mono', monospace;
 	color: var(--col-text-light);
-	overflow: hidden;
 	margin: 0;
 }
 main {
@@ -36,6 +35,7 @@ article {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	overflow: auto;
 }
 article:has(#output) {
 	display: flex;
@@ -127,5 +127,11 @@ code[contenteditable] {
 @media screen and (max-width: 728px) {
 	main {
 		grid-template-columns: auto;
+	}
+	#preview {
+		grid-template-rows: auto;
+	}
+	.labelled-input {
+		flex-direction: column;
 	}
 }
