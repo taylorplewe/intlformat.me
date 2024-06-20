@@ -116,11 +116,15 @@ code[contenteditable] {
 	font-size: 42pt;
 	color: var(--col-text-light);
 }
+#output[shrink] {
+	font-size: 32pt;
+}
 
 #preview {
 	display: grid;
 	grid-template-rows: 1fr 1fr;
 	gap: 16px;
+	overflow: auto;
 }
 #controls {
 	display: flex;
@@ -160,6 +164,9 @@ code[contenteditable] {
 	}
 	#output {
 		font-size: 24pt;
+	}
+	#output[shrink] {
+		font-size: 18pt;
 	}
 	.labelled-input {
 		flex-direction: column;

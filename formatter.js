@@ -130,6 +130,8 @@ export default class Formatter {
 
 		this.els.expressionEl.textContent = this.expressionText;
 		this.els.outputEl.textContent = this.outputText;
+		this.els.outputEl.removeAttribute('shrink');
+		if (this.els.outputEl.getBoundingClientRect().width > this.els.outputEl.parentNode.getBoundingClientRect().width * 0.75) this.els.outputEl.setAttribute('shrink', '');
 
 		// error handling
 		if (this.errorMessages.date) {
