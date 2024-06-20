@@ -38,7 +38,7 @@ export default class Formatter {
 
 	get expressionText() {
 		const secondParamText = this.optionsText.length ? `,\n${TAB}{\n${TAB}${TAB}${this.optionsText}\n${TAB}}` : '';
-		const localeText = this._locale === undefined ? 'undefined' : `'${this._locale}'`;
+		const localeText = this._locale === 'undefined' ? 'undefined' : `'${this._locale}'`;
 		return `Intl.DateTimeFormat(\n${TAB}${localeText}${secondParamText}\n).format(new Date(${this.dateText}));`;
 	}
 
