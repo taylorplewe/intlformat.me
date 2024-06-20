@@ -1,4 +1,5 @@
 import OPTIONS from './options.js';
+const TAB = '  ';
 
 export default class Formatter {
 	constructor(els) {
@@ -19,7 +20,8 @@ export default class Formatter {
 				}
 			});
 		}
-		this.dateString = '07/02/1997';
+		this._dateInput = '07/02/1997';
+		this.dateText = `'${this._dateInput}'`;
 		this.errorMessages = {
 			locale: '',
 			date: '',
@@ -31,29 +33,48 @@ export default class Formatter {
 		return Object.entries(this._options)
 			.filter(o => !!o[1])
 			.map(o => `${o[0]}: '${o[1]}'`)
-			.join(',\n\t\t');
+			.join(`,\n${TAB}${TAB}`);
 	}
 
 	get expressionText() {
-		const secondParamText = this.optionsText.length ? `,\n\t{\n\t\t${this.optionsText}\n\t}` : '';
-		return `Intl.DateTimeFormat(\n\t'${this._locale}'${secondParamText}\n).format(new Date(${this.dateString.length ? `'${this.dateString}'` : ''}));`;
+		const secondParamText = this.optionsText.length ? `,\n${TAB}{\n${TAB}${TAB}${this.optionsText}\n${TAB}}` : '';
+		const localeText = this._locale === undefined ? 'undefined' : `'${this._locale}'`;
+		return `Intl.DateTimeFormat(\n${TAB}${localeText}${secondParamText}\n).format(new Date(${this.dateText}));`;
+	}
+
+	get processedDate() {
+		switch (this._dateInput) {
+			case '':
+				return this.dateText[0] === `'` ? new Date('') : new Date();
+			default:
+				return new Date(this._dateInput);
+		}
+	}
+
+	get processedLocale() {
+		switch (this._locale) {
+			case 'undefined':
+				return undefined;
+			default:
+				return this._locale;
+		}
 	}
 
 	get outputText() {
 		let formatter, output = '';
 		try {
 			this.errorMessages.locale = '';
-			formatter = Intl.DateTimeFormat(this._locale, this._options);
+			formatter = Intl.DateTimeFormat(this.processedLocale, this._options);
 		} catch ({ message }) {
 			this.errorMessages.locale = message;
-			return '';
+			return '😢';
 		}
 		try {
 			this.errorMessages.date = '';
-			output = formatter.format(new Date(this.dateString || null));
+			output = formatter.format(this.processedDate);
 		} catch ({ message }) {
 			this.errorMessages.date = message;
-			return '';
+			return '😢';
 		}
 		return output;
 	}
@@ -64,6 +85,38 @@ export default class Formatter {
 	set locale(val) {
 		this._locale = val;
 		this.updateEls();
+	}
+	set dateString(val) {
+		if (/^(\-)?\d+$/.test(val)) {
+			this._dateInput = parseInt(val);
+			this.dateText = val;
+			return;
+		}
+		if (/^'.*'$/.test(val)) {
+			this._dateInput = val.substring(1, val.length - 1);
+			this.dateText = val;
+			return;
+		}
+		if (val.length === 0) {
+			this._dateInput = val;
+			this.dateText = '';
+			return;
+		}
+		if (val === 'null') {
+			this._dateInput = null;
+			this.dateText = 'null';
+			return;
+		}
+		if (val === 'undefined') {
+			this._dateInput = undefined;
+			this.dateText = 'undefined';
+			return;
+		}
+		this._dateInput = val;
+		this.dateText = `'${val}'`;
+	}
+	get dateString() {
+		return this._dateInput;
 	}
 	get options() {
 		return this._options;

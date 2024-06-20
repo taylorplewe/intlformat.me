@@ -21,18 +21,20 @@ for (const entry of Object.entries(OPTIONS.dateTimeComponents)) {
 	const selectEl = document.createElement('select');
 
 	inputEl.className = 'labelled-input';
-	labelEl.textContent = entry[0];
 	for (const option of entry[1]) {
 		const optionEl = document.createElement('option');
 		optionEl.textContent = option;
 		optionEl.value = option;
 		selectEl.appendChild(optionEl);
-		selectEl.className = 'input';
 	}
+	selectEl.className = 'input';
+	selectEl.id = `option-${entry[0]}`;
 	selectEl.addEventListener('change', e => {
 		formatter.options[entry[0]] = e.target.value;
 		formatter.updateEls();
 	});
+	labelEl.textContent = entry[0];
+	labelEl.setAttribute('for', `option-${entry[0]}`);
 
 	inputEl.appendChild(labelEl);
 	inputEl.appendChild(selectEl);

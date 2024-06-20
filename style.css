@@ -16,13 +16,11 @@ body {
 	font-family: 'Red Hat Mono', monospace;
 	color: var(--col-text-light);
 	margin: 0;
+	overflow: hidden;
 }
 main {
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
+	height: 100vh;
+	box-sizing: border-box;
 	padding: 16px;
 	display: grid;
 	grid-template-columns: 60% auto;
@@ -35,12 +33,14 @@ article {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	overflow: auto;
+	overflow: visible;
 }
 article:has(#output) {
-	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+article.overflow-auto {
+	overflow: auto;
 }
 h1, pre, p {
 	margin: 0;
@@ -65,6 +65,9 @@ option {
 
 .flex-grow {
 	flex-grow: 1;
+}
+.text-input {
+	min-height: 24px;
 }
 .text-input:not([contenteditable]) {
 	cursor: pointer;
@@ -113,6 +116,7 @@ code[contenteditable] {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+	overflow: auto;
 }
 #options label {
 	font-size: 14pt;
@@ -122,14 +126,25 @@ code[contenteditable] {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	overflow: auto;
 }
 
 @media screen and (max-width: 728px) {
+	body {
+		overflow: initial;
+	}
 	main {
+		height: initial;
 		grid-template-columns: auto;
+	}
+	select {
+		width: 100%;
 	}
 	#preview {
 		grid-template-rows: auto;
+	}
+	#output {
+		font-size: 24pt;
 	}
 	.labelled-input {
 		flex-direction: column;
