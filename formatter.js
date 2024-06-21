@@ -7,18 +7,20 @@ export default class Formatter {
 
 		this._locale = 'en-US';
 		this._options = {};
-		for (const entry of Object.entries(OPTIONS.dateTimeComponents)) {
-			this._options[entry[0]] = undefined;
-			const _this = this;
-			Object.defineProperty(this._options, entry[0], {
-				set(val) {
-					_this[entry[0]] = val === 'undefined' ? undefined : val;
-					_this.updateEls();
-				},
-				get() {
-					return _this[entry[0]];
-				}
-			});
+		for (const category of Object.entries(OPTIONS)) {
+			for (const optionName of Object.keys(category[1])) {
+				this._options[optionName] = undefined;
+				const _this = this;
+				Object.defineProperty(this._options, optionName, {
+					set(val) {
+						_this[optionName] = val === 'undefined' ? undefined : val;
+						_this.updateEls();
+					},
+					get() {
+						return _this[optionName];
+					}
+				});
+			}
 		}
 		this._dateInput = '07/02/1997';
 		this.dateText = `'${this._dateInput}'`;
@@ -143,6 +145,14 @@ export default class Formatter {
 			this.els.localeEl.setAttribute('invalid', '');
 			this.els.localeErrorEl.style.display = 'block';
 			this.els.localeErrorEl.textContent = this.errorMessages.locale;
+		}
+
+		// placeholders of text inputs
+		for (const el of document.querySelectorAll('.text-input')) {
+			el.removeAttribute('empty');
+			if (!el.textContent?.length) {
+				el.setAttribute('empty', '');
+			}
 		}
 	}
 }

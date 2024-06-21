@@ -1,8 +1,8 @@
 export default {
 	locale: {
 		localeMatcher: [
-			'lookup',
 			'best fit',
+			'lookup',
 		],
 		calendar: [
 			'buddhist',

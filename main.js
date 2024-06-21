@@ -15,55 +15,57 @@ formatter.updateEls();
 
 // create options elements
 const optionsListEl = document.querySelector('#options-list');
-for (const entry of Object.entries(OPTIONS.dateTimeComponents)) {
-	const inputEl = document.createElement('div');
-	const labelEl = document.createElement('label');
-	const selectEl = document.createElement('select');
+let i = 0;
+for (const category of Object.entries(OPTIONS)) {
+	for (const entry of Object.entries(category[1])) {
+		const inputEl = document.createElement('div');
+		const labelEl = document.createElement('label');
+		inputEl.className = 'labelled-input';
+		labelEl.textContent = entry[0];
+		labelEl.setAttribute('for', `option-${entry[0]}`);
+		inputEl.appendChild(labelEl);
 
-	inputEl.className = 'labelled-input';
-	for (const option of entry[1]) {
-		const optionEl = document.createElement('option');
-		optionEl.textContent = option;
-		optionEl.value = option;
-		selectEl.appendChild(optionEl);
+		if (entry[1].length > 0) {
+			const selectEl = document.createElement('select');
+			for (const option of entry[1]) {
+				const optionEl = document.createElement('option');
+				optionEl.textContent = option;
+				optionEl.value = option;
+				selectEl.appendChild(optionEl);
+				selectEl.className = 'input';
+				selectEl.id = `option-${entry[0]}`;
+				selectEl.addEventListener('change', e => {
+					formatter.options[entry[0]] = e.target.value;
+					formatter.updateEls();
+				});
+			}
+			inputEl.appendChild(selectEl);
+		} else {
+			const textInputEl = document.createElement('input');
+			textInputEl.prop = entry[0];
+			inputEl.appendChild(textInputEl);
+		}
+		optionsListEl.appendChild(inputEl);
 	}
-	selectEl.className = 'input';
-	selectEl.id = `option-${entry[0]}`;
-	selectEl.addEventListener('change', e => {
-		formatter.options[entry[0]] = e.target.value;
-		formatter.updateEls();
-	});
-	labelEl.textContent = entry[0];
-	labelEl.setAttribute('for', `option-${entry[0]}`);
-
-	inputEl.appendChild(labelEl);
-	inputEl.appendChild(selectEl);
-	optionsListEl.appendChild(inputEl);
+	i++;
+	if (i < Object.keys(OPTIONS).length) {
+		optionsListEl.appendChild(document.createElement('hr'));
+	}
 }
 
 const applyInput = (e, prop, el) => {
 	if ('key' in e && e.key !== 'Enter') return;
-	el.removeAttribute('contenteditable');
-	formatter[prop] = el.textContent;
+	formatter[prop] = el.value;
+	el.blur();
 	formatter.updateEls();
 }
-const selectContentEditable = el => {
-    const range = document.createRange();
-    const sel = window.getSelection();
-    range.selectNodeContents(el);
-    sel.removeAllRanges();
-    sel.addRange(range);
-}
 
-for (const el of document.querySelectorAll('.text-input')) {
+for (const el of document.querySelectorAll('input')) {
 	const prop = el.getAttribute('prop');
 	el.addEventListener('click', () => {
-		if (!el.hasAttribute('contenteditable')) {
-			el.setAttribute('contenteditable', '');
-			selectContentEditable(el);
-		}
+		el.select();
 	});
 	el.addEventListener('keydown', e => applyInput(e, prop, el));
 	el.addEventListener('blur', e => applyInput(e, prop, el));
-	el.textContent = formatter[prop];
+	el.value = formatter[prop];
 }
