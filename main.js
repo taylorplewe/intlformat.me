@@ -30,7 +30,6 @@ for (const category of Object.entries(OPTIONS)) {
 			for (const option of entry[1]) {
 				const optionEl = document.createElement('option');
 				optionEl.textContent = option;
-				optionEl.value = option;
 				selectEl.appendChild(optionEl);
 				selectEl.className = 'input';
 				selectEl.id = `option-${entry[0]}`;
@@ -38,6 +37,17 @@ for (const category of Object.entries(OPTIONS)) {
 					formatter.options[entry[0]] = e.target.value;
 					formatter.updateEls();
 				});
+				switch (option) {
+					case 'true':
+						optionEl.value = true;
+						break;
+					case 'false':
+						optionEl.value = false;
+						break;
+					default:
+						optionEl.value = option;
+						break;
+				}
 			}
 			inputEl.appendChild(selectEl);
 		} else {

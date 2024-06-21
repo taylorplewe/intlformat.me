@@ -34,7 +34,7 @@ export default class Formatter {
 	get optionsText() {
 		return Object.entries(this._options)
 			.filter(o => !!o[1])
-			.map(o => `${o[0]}: '${o[1]}'`)
+			.map(o => `${o[0]}: ${this.getObjectValueString(o[1])}`)
 			.join(`,\n${TAB}${TAB}`);
 	}
 
@@ -153,6 +153,18 @@ export default class Formatter {
 			if (!el.textContent?.length) {
 				el.setAttribute('empty', '');
 			}
+		}
+	}
+
+	getObjectValueString(val) {
+		switch (val) {
+			case 'true':
+			case 'false':
+			case 'null':
+			case 'undefined':
+				return val;
+			default:
+				return `'${val}'`;
 		}
 	}
 }
