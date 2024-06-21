@@ -8,10 +8,10 @@ const els = {
 	localeEl: document.querySelector('#locale'),
 	dateErrorEl: document.querySelector('#date-error'),
 	localeErrorEl: document.querySelector('#locale-error'),
+	optionsListEl: document.querySelector('#options-list'),
 };
 
 const formatter = new Formatter(els);
-formatter.updateEls();
 
 // create options elements
 const optionsListEl = document.querySelector('#options-list');
@@ -52,7 +52,7 @@ for (const category of Object.entries(OPTIONS)) {
 			inputEl.appendChild(selectEl);
 		} else {
 			const textInputEl = document.createElement('input');
-			textInputEl.prop = entry[0];
+			textInputEl.id = `option-${entry[0]}`;
 			inputEl.appendChild(textInputEl);
 		}
 		optionsListEl.appendChild(inputEl);
@@ -62,6 +62,8 @@ for (const category of Object.entries(OPTIONS)) {
 		optionsListEl.appendChild(document.createElement('hr'));
 	}
 }
+
+formatter.updateEls();
 
 const applyInput = (e, prop, el) => {
 	if ('key' in e && e.key !== 'Enter') return;

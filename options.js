@@ -114,16 +114,18 @@ export default {
 			'wcho',
 		],
 		hour12: [
+			'undefined',
 			'true',
 			'false',
 		],
 		hourCycle: [
+			'undefined',
 			'h11',
 			'h12',
 			'h23',
 			'h24',
 		],
-		timezone: [],
+		timeZone: [],
 	},
 	dateTimeComponents: {
 		weekday: [

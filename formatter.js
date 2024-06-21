@@ -8,16 +8,16 @@ export default class Formatter {
 		this._locale = 'en-US';
 		this._options = {};
 		for (const category of Object.entries(OPTIONS)) {
-			for (const optionName of Object.keys(category[1])) {
-				this._options[optionName] = undefined;
+			for (const option of Object.entries(category[1])) {
+				this._options[option[0]] = option[1].length ? option[1][0] : '';
 				const _this = this;
-				Object.defineProperty(this._options, optionName, {
+				Object.defineProperty(this._options, option[0], {
 					set(val) {
-						_this[optionName] = val === 'undefined' ? undefined : val;
+						_this[option[0]] = val === 'undefined' ? undefined : val;
 						_this.updateEls();
 					},
 					get() {
-						return _this[optionName];
+						return _this[option[0]];
 					}
 				});
 			}
@@ -28,12 +28,13 @@ export default class Formatter {
 			locale: '',
 			date: '',
 		};
+		this.initLocaleDependantValues();
 		this.updateEls();
 	}
 
 	get optionsText() {
 		return Object.entries(this._options)
-			.filter(o => !!o[1])
+			.filter(o => this.showOption(o))
 			.map(o => `${o[0]}: ${this.getObjectValueString(o[1])}`)
 			.join(`,\n${TAB}${TAB}`);
 	}
@@ -123,6 +124,16 @@ export default class Formatter {
 	get options() {
 		return this._options;
 	}
+	get flattenedOptions() {
+		Object.entries(this._options).reduce((acc, curr) => acc = [...acc, ...curr[1]], []);
+	}
+
+	initLocaleDependantValues() {
+		const f = new Intl.DateTimeFormat();
+		this._options.calendar = f.resolvedOptions().calendar;
+		this._options.numberingSystem = f.resolvedOptions().numberingSystem;
+		this._options.timeZone = f.resolvedOptions().timeZone;
+	}
 
 	updateEls() {
 		this.els.dateErrorEl.style.display = 'none';
@@ -147,12 +158,21 @@ export default class Formatter {
 			this.els.localeErrorEl.textContent = this.errorMessages.locale;
 		}
 
-		// placeholders of text inputs
-		for (const el of document.querySelectorAll('.text-input')) {
-			el.removeAttribute('empty');
-			if (!el.textContent?.length) {
-				el.setAttribute('empty', '');
-			}
+		// update all option values
+		for (const el of document.querySelectorAll('select, input')) {
+			const prop = el.id.replace('option-', '');
+			el.value = this[prop];
+		}
+	}
+
+	showOption(o) {
+		switch (o[0]) {
+			case 'timeZone':
+			case 'calendar':
+			case 'numberingSystem':
+				return o[1] !== Intl.DateTimeFormat(this.locale).resolvedOptions()[o[0]];
+			default:
+				return !!o[1];
 		}
 	}
 
