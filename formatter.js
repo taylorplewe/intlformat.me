@@ -22,7 +22,12 @@ export default class Formatter {
 
 	set locale(val) {
 		this._locale = this._getProcessedValue(val);
-		this._formatter = new Intl.DateTimeFormat(val, this.options);
+		try {
+			this._errorMessages.locale = '';
+			this._formatter = new Intl.DateTimeFormat(this._locale, this.options);
+		} catch ({ message }) {
+			this._errorMessages.locale = message;
+		}
 		this.updateEls();
 	}
 	set dateString(val) {
@@ -53,9 +58,8 @@ export default class Formatter {
 			output = this._formatter.format(date);
 		} catch ({ message }) {
 			this._errorMessages.date = message;
-			return '😢';
 		}
-		return output;
+		return Object.values(this._errorMessages).some(m => m.length) ? '😢' : output;
 	}
 
 	setOption(option, val) {
@@ -100,7 +104,11 @@ export default class Formatter {
 			case 'month':
 			case 'day':
 			case 'year':
-				return this.options.month === 'numeric' && this.options.day === 'numeric' && this.options.year === 'numeric' ? false : true;
+				const o = new Intl.DateTimeFormat(this._locale).resolvedOptions();
+				return this.options.month === o.month
+					&& this.options.day === o.day
+					&& this.options.year === o.year
+					? false : true;
 			case 'locale':
 				return false;
 			case 'timeZone':
