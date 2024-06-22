@@ -7,6 +7,7 @@ const LITERAL_MAP = {
 };
 const QUOTE_SURROUNDING_TEXT_REGEX = /^['"`](.*)['"`]$/;
 const ALL_DIGITS_REGEX = /^\d+$/;
+import OPTIONS from './options.js';
 
 export default class Formatter {
 	constructor(els) {
@@ -21,9 +22,10 @@ export default class Formatter {
 	}
 
 	set locale(val) {
-		this._locale = this._getProcessedValue(val);
+		this._locale = this._getProcessedValue(val.toLowerCase());
 		try {
 			this._errorMessages.locale = '';
+			console.log('trying locale');
 			this._formatter = new Intl.DateTimeFormat(this._locale, this.options);
 		} catch ({ message }) {
 			this._errorMessages.locale = message;
@@ -31,7 +33,7 @@ export default class Formatter {
 		this.updateEls();
 	}
 	set dateString(val) {
-		this._dateInput = this._getProcessedValue(val);
+		this._dateInput = this._getProcessedValue(val.toLowerCase());
 		this.updateEls();
 	}
 
@@ -54,7 +56,14 @@ export default class Formatter {
 		let output = '';
 		try {
 			this._errorMessages.date = '';
-			const date = this._dateInput?.length ? new Date(this._dateInput) : new Date();
+			let date;
+			switch (typeof this._dateInput) {
+				case 'string':
+					date = this._dateInput ? new Date(this._dateInput) : new Date();
+					break;
+				default:
+					date = new Date(this._dateInput);
+			}
 			output = this._formatter.format(date);
 		} catch ({ message }) {
 			this._errorMessages.date = message;
@@ -83,15 +92,15 @@ export default class Formatter {
 			this._els.dateErrorEl.style.display = 'block';
 			this._els.dateErrorEl.textContent = this._errorMessages.date;
 		}
-		if (this._errorMessages.locale.length) {
+		if (this._errorMessages.locale) {
 			this._els.localeEl.setAttribute('invalid', '');
 			this._els.localeErrorEl.style.display = 'block';
 			this._els.localeErrorEl.textContent = this._errorMessages.locale;
 		}
 
 		// update date & locale
-		this._els.dateEl.value = `${this._dateInput}`;
-		this._els.localeEl.value = `${this._locale}`;
+		this._els.dateEl.value = this._getProcessedOutputString(this._dateInput);
+		this._els.localeEl.value = this._getProcessedOutputString(this._locale);
 
 		// update all option values
 		for (const el of this._els.optionsListEl.querySelectorAll('select, input')) {
@@ -100,26 +109,36 @@ export default class Formatter {
 		}
 	}
 	_showOption({ 0: optionName, 1: value }) {
+		let o = {};
+		try {
+			o = new Intl.DateTimeFormat(this._locale).resolvedOptions();
+		} catch {
+			return false;
+		}
 		switch (optionName) {
 			case 'month':
 			case 'day':
 			case 'year':
-				const o = new Intl.DateTimeFormat(this._locale).resolvedOptions();
+				const otherOptionsAreSet = Object.entries(OPTIONS.dateTimeComponents)
+					.filter(e => !['month', 'year', 'day'].includes(e[0]))
+					.some(e => this.options[e[0]] !== o[e[0]]);
 				return this.options.month === o.month
 					&& this.options.day === o.day
 					&& this.options.year === o.year
+					&& !otherOptionsAreSet
 					? false : true;
 			case 'locale':
 				return false;
 			case 'timeZone':
 			case 'calendar':
 			case 'numberingSystem':
-				return value !== Intl.DateTimeFormat(this._locale).resolvedOptions()[optionName];
+				return value !== o[optionName];
 			default:
 				return !!value;
 		}
 	}
 	_getProcessedValue(val) {
+		console.trace();
 		let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
 		if (match) return match[1];
 		if (ALL_DIGITS_REGEX.test(val)) return parseInt(val);

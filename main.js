@@ -64,13 +64,14 @@ for (const category of Object.entries(OPTIONS)) {
 formatter.updateEls();
 
 const applyInput = (e, prop, el) => {
-	if ('key' in e && e.key !== 'Enter') return;
+	if ('key' in e) {
+		if (e.key === 'Enter') el.blur();
+		return;
+	}
 
 	const match = el.id?.match(/option\-(.+)/);
 	if (match) formatter.setOption(match[1], el.value);
 	else formatter[prop] = el.value;
-
-	el.blur();
 }
 
 for (const el of document.querySelectorAll('input')) {
