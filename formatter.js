@@ -1,173 +1,123 @@
-import OPTIONS from './options.js';
 const TAB = '  ';
+const LITERAL_MAP = {
+	'undefined': undefined,
+	'null': null,
+	'true': true,
+	'false': false,
+};
+const QUOTE_SURROUNDING_TEXT_REGEX = /^['"`](.*)['"`]$/;
+const ALL_DIGITS_REGEX = /^\d+$/;
 
 export default class Formatter {
 	constructor(els) {
 		this._els = els;
-		this._locale = undefined;
 		this._formatter = new Intl.DateTimeFormat();
-		this._dateString = '07/02/1997';
+		this._locale = undefined;
+		this._dateInput = '07/02/1997';
 		this._errorMessages = {
 			locale: '',
 			date: '',
 		};
-		this.initLocaleDependantValues();
+	}
+
+	set locale(val) {
+		this._locale = this._getProcessedValue(val);
+		this._formatter = new Intl.DateTimeFormat(val, this.options);
+		this.updateEls();
+	}
+	set dateString(val) {
+		this._dateInput = this._getProcessedValue(val);
 		this.updateEls();
 	}
 
+	get options() {
+		return this._formatter.resolvedOptions();
+	}
 	get optionsText() {
-		return Object.entries(this._options)
-			.filter(o => this.showOption(o))
-			.map(o => `${o[0]}: ${this.getObjectValueString(o[1])}`)
+		return Object.entries(this.options)
+			.filter(o => this._showOption(o))
+			.map(o => `${o[0]}: ${this._getProcessedOutputString(o[1])}`)
 			.join(`,\n${TAB}${TAB}`);
 	}
-
 	get expressionText() {
+		const localeText = this._getProcessedOutputString(this._locale);
+		const dateText = this._getProcessedOutputString(this._dateInput);
 		const secondParamText = this.optionsText.length ? `,\n${TAB}{\n${TAB}${TAB}${this.optionsText}\n${TAB}}` : '';
-		const localeText = this._locale === 'undefined' ? 'undefined' : `'${this._locale}'`;
-		return `Intl.DateTimeFormat(\n${TAB}${localeText}${secondParamText}\n).format(new Date(${this.dateText}));`;
+		return `Intl.DateTimeFormat(\n${TAB}${localeText}${secondParamText}\n).format(new Date(${dateText}));`;
 	}
-
-	get processedDate() {
-		switch (this._dateInput) {
-			case '':
-				return this.dateText[0] === `'` ? new Date('') : new Date();
-			default:
-				return new Date(this._dateInput);
-		}
-	}
-
-	get processedLocale() {
-		switch (this._locale) {
-			case 'undefined':
-				return undefined;
-			default:
-				return this._locale;
-		}
-	}
-
 	get outputText() {
-		let formatter, output = '';
+		let output = '';
 		try {
-			this.errorMessages.locale = '';
-			formatter = Intl.DateTimeFormat(this.processedLocale, this._options);
+			this._errorMessages.date = '';
+			const date = this._dateInput?.length ? new Date(this._dateInput) : new Date();
+			output = this._formatter.format(date);
 		} catch ({ message }) {
-			this.errorMessages.locale = message;
-			return '😢';
-		}
-		try {
-			this.errorMessages.date = '';
-			output = formatter.format(this.processedDate);
-		} catch ({ message }) {
-			this.errorMessages.date = message;
+			this._errorMessages.date = message;
 			return '😢';
 		}
 		return output;
 	}
 
-	get locale() {
-		return this._locale;
-	}
-	set locale(val) {
-		this._locale = val;
+	setOption(option, val) {
+		this._formatter = new Intl.DateTimeFormat(this._locale, { ...structuredClone(this.options), [option]: this._getProcessedValue(val) });
 		this.updateEls();
 	}
-	set dateString(val) {
-		if (/^(\-)?\d+$/.test(val)) {
-			this._dateInput = parseInt(val);
-			this.dateText = val;
-			return;
-		}
-		if (/^'.*'$/.test(val)) {
-			this._dateInput = val.substring(1, val.length - 1);
-			this.dateText = val;
-			return;
-		}
-		if (val.length === 0) {
-			this._dateInput = val;
-			this.dateText = '';
-			return;
-		}
-		if (val === 'null') {
-			this._dateInput = null;
-			this.dateText = 'null';
-			return;
-		}
-		if (val === 'undefined') {
-			this._dateInput = undefined;
-			this.dateText = 'undefined';
-			return;
-		}
-		this._dateInput = val;
-		this.dateText = `'${val}'`;
-	}
-	get dateString() {
-		return this._dateInput;
-	}
-	get options() {
-		return this.formatter.resolvedOptions();
-	}
-	get flattenedOptions() {
-		Object.entries(this._options).reduce((acc, curr) => acc = [...acc, ...curr[1]], []);
-	}
-
-	initLocaleDependantValues() {
-		const f = new Intl.DateTimeFormat();
-		this._options.calendar = f.resolvedOptions().calendar;
-		this._options.numberingSystem = f.resolvedOptions().numberingSystem;
-		this._options.timeZone = f.resolvedOptions().timeZone;
-	}
-
 	updateEls() {
-		this.els.dateErrorEl.style.display = 'none';
-		this.els.localeErrorEl.style.display = 'none';
-		this.els.dateEl.removeAttribute('invalid');
-		this.els.localeEl.removeAttribute('invalid');
+		this._els.dateErrorEl.style.display = 'none';
+		this._els.localeErrorEl.style.display = 'none';
+		this._els.dateEl.removeAttribute('invalid');
+		this._els.localeEl.removeAttribute('invalid');
 
-		this.els.expressionEl.textContent = this.expressionText;
-		this.els.outputEl.textContent = this.outputText;
-		this.els.outputEl.removeAttribute('shrink');
-		if (this.els.outputEl.getBoundingClientRect().width > this.els.outputEl.parentNode.getBoundingClientRect().width * 0.75) this.els.outputEl.setAttribute('shrink', '');
+		this._els.expressionEl.textContent = this.expressionText;
+		this._els.outputEl.textContent = this.outputText;
+		this._els.outputEl.removeAttribute('shrink');
+		if (this._els.outputEl.getBoundingClientRect().width > this._els.outputEl.parentNode.getBoundingClientRect().width * 0.75) this._els.outputEl.setAttribute('shrink', '');
 
 		// error handling
-		if (this.errorMessages.date) {
-			this.els.dateEl.setAttribute('invalid', '');
-			this.els.dateErrorEl.style.display = 'block';
-			this.els.dateErrorEl.textContent = this.errorMessages.date;
+		if (this._errorMessages.date) {
+			this._els.dateEl.setAttribute('invalid', '');
+			this._els.dateErrorEl.style.display = 'block';
+			this._els.dateErrorEl.textContent = this._errorMessages.date;
 		}
-		if (this.errorMessages.locale.length) {
-			this.els.localeEl.setAttribute('invalid', '');
-			this.els.localeErrorEl.style.display = 'block';
-			this.els.localeErrorEl.textContent = this.errorMessages.locale;
+		if (this._errorMessages.locale.length) {
+			this._els.localeEl.setAttribute('invalid', '');
+			this._els.localeErrorEl.style.display = 'block';
+			this._els.localeErrorEl.textContent = this._errorMessages.locale;
 		}
+
+		// update date & locale
+		this._els.dateEl.value = `${this._dateInput}`;
+		this._els.localeEl.value = `${this._locale}`;
 
 		// update all option values
-		for (const el of document.querySelectorAll('select, input')) {
+		for (const el of this._els.optionsListEl.querySelectorAll('select, input')) {
 			const prop = el.id.replace('option-', '');
-			el.value = this[prop];
+			el.value = this.options[prop];
 		}
 	}
-
-	showOption(o) {
-		switch (o[0]) {
+	_showOption({ 0: optionName, 1: value }) {
+		switch (optionName) {
+			case 'month':
+			case 'day':
+			case 'year':
+				return this.options.month === 'numeric' && this.options.day === 'numeric' && this.options.year === 'numeric' ? false : true;
+			case 'locale':
+				return false;
 			case 'timeZone':
 			case 'calendar':
 			case 'numberingSystem':
-				return o[1] !== Intl.DateTimeFormat(this.locale).resolvedOptions()[o[0]];
+				return value !== Intl.DateTimeFormat(this._locale).resolvedOptions()[optionName];
 			default:
-				return !!o[1];
+				return !!value;
 		}
 	}
-
-	getObjectValueString(val) {
-		switch (val) {
-			case 'true':
-			case 'false':
-			case 'null':
-			case 'undefined':
-				return val;
-			default:
-				return `'${val}'`;
-		}
+	_getProcessedValue(val) {
+		let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
+		if (match) return match[1];
+		if (ALL_DIGITS_REGEX.test(val)) return parseInt(val);
+		return val in LITERAL_MAP ? LITERAL_MAP[val] : val;
+	}
+	_getProcessedOutputString(val) {
+		return typeof val !== 'string' || !val.length ? `${val}` : `'${val}'`;
 	}
 }

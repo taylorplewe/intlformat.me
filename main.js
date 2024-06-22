@@ -14,7 +14,6 @@ const els = {
 const formatter = new Formatter(els);
 
 // create options elements
-const optionsListEl = document.querySelector('#options-list');
 let i = 0;
 for (const category of Object.entries(OPTIONS)) {
 	for (const entry of Object.entries(category[1])) {
@@ -34,8 +33,7 @@ for (const category of Object.entries(OPTIONS)) {
 				selectEl.className = 'input';
 				selectEl.id = `option-${entry[0]}`;
 				selectEl.addEventListener('change', e => {
-					formatter.options[entry[0]] = e.target.value;
-					formatter.updateEls();
+					formatter.setOption(entry[0], e.target.value);
 				});
 				switch (option) {
 					case 'true':
@@ -55,11 +53,11 @@ for (const category of Object.entries(OPTIONS)) {
 			textInputEl.id = `option-${entry[0]}`;
 			inputEl.appendChild(textInputEl);
 		}
-		optionsListEl.appendChild(inputEl);
+		els.optionsListEl.appendChild(inputEl);
 	}
 	i++;
 	if (i < Object.keys(OPTIONS).length) {
-		optionsListEl.appendChild(document.createElement('hr'));
+		els.optionsListEl.appendChild(document.createElement('hr'));
 	}
 }
 
@@ -67,9 +65,12 @@ formatter.updateEls();
 
 const applyInput = (e, prop, el) => {
 	if ('key' in e && e.key !== 'Enter') return;
-	formatter[prop] = el.value;
+
+	const match = el.id?.match(/option\-(.+)/);
+	if (match) formatter.setOption(match[1], el.value);
+	else formatter[prop] = el.value;
+
 	el.blur();
-	formatter.updateEls();
 }
 
 for (const el of document.querySelectorAll('input')) {
@@ -79,5 +80,4 @@ for (const el of document.querySelectorAll('input')) {
 	});
 	el.addEventListener('keydown', e => applyInput(e, prop, el));
 	el.addEventListener('blur', e => applyInput(e, prop, el));
-	el.value = formatter[prop];
 }
