@@ -3,26 +3,11 @@ const TAB = '  ';
 
 export default class Formatter {
 	constructor(els) {
-		this.els = els;
-
-		this._locale = 'en-US';
-		this._options = {};
-		for (const entry of Object.entries(OPTIONS.dateTimeComponents)) {
-			this._options[entry[0]] = undefined;
-			const _this = this;
-			Object.defineProperty(this._options, entry[0], {
-				set(val) {
-					_this[entry[0]] = val === 'undefined' ? undefined : val;
-					_this.updateEls();
-				},
-				get() {
-					return _this[entry[0]];
-				}
-			});
-		}
-		this._dateInput = '07/02/1997';
-		this.dateText = `'${this._dateInput}'`;
-		this.errorMessages = {
+		this._els = els;
+		this._locale = undefined;
+		this._formatter = new Intl.DateTimeFormat();
+		this._dateString = '07/02/1997';
+		this._errorMessages = {
 			locale: '',
 			date: '',
 		};
@@ -119,7 +104,7 @@ export default class Formatter {
 		return this._dateInput;
 	}
 	get options() {
-		return this._options;
+		return this.formatter.resolvedOptions();
 	}
 
 	updateEls() {
