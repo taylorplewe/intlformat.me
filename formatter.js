@@ -109,9 +109,9 @@ export default class Formatter {
 		}
 	}
 	_showOption({ 0: optionName, 1: value }) {
-		let o = {};
+		let defaultFormatterForLocale = {};
 		try {
-			o = new Intl.DateTimeFormat(this._locale).resolvedOptions();
+			defaultFormatterForLocale = new Intl.DateTimeFormat(this._locale).resolvedOptions();
 		} catch {
 			return false;
 		}
@@ -121,20 +121,32 @@ export default class Formatter {
 			case 'year':
 				const otherOptionsAreSet = Object.entries(OPTIONS.dateTimeComponents)
 					.filter(e => !['month', 'year', 'day'].includes(e[0]))
-					.some(e => this.options[e[0]] !== o[e[0]]);
-				return this.options.month === o.month
-					&& this.options.day === o.day
-					&& this.options.year === o.year
+					.some(e => this.options[e[0]] !== defaultFormatterForLocale[e[0]]);
+				return this.options.month === defaultFormatterForLocale.month
+					&& this.options.day === defaultFormatterForLocale.day
+					&& this.options.year === defaultFormatterForLocale.year
 					&& !otherOptionsAreSet
 					? false : true;
 			case 'locale':
 				return false;
-			case 'timeZone':
-			case 'calendar':
-			case 'numberingSystem':
-				return value !== o[optionName];
+			case 'hour12':
+				let defaultHourFormatterForLocale = {};
+				try {
+					defaultHourFormatterForLocale = new Intl.DateTimeFormat(this._locale, { hour: this.options.hour }).resolvedOptions();
+					return this.options.hour12 !== defaultHourFormatterForLocale.hour12;
+				} catch {
+					return false;
+				}
+			case 'hourCycle':
+				let defaultHour12FormatterForLocale = {};
+				try {
+					defaultHour12FormatterForLocale = new Intl.DateTimeFormat(this._locale, { hour: this.options.hour, hour12: this.options.hour12 }).resolvedOptions();
+					return this.options.hourCycle !== defaultHour12FormatterForLocale.hourCycle;
+				} catch {
+					return false;
+				}
 			default:
-				return !!value;
+				return value !== defaultFormatterForLocale[optionName];
 		}
 	}
 	_getProcessedValue(val) {
