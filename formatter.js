@@ -22,10 +22,9 @@ export default class Formatter {
 	}
 
 	set locale(val) {
-		this._locale = this._getProcessedValue(val.toLowerCase());
+		this._locale = this._getProcessedValue(val);
 		try {
 			this._errorMessages.locale = '';
-			console.log('trying locale');
 			this._formatter = new Intl.DateTimeFormat(this._locale, this.options);
 		} catch ({ message }) {
 			this._errorMessages.locale = message;
@@ -150,7 +149,6 @@ export default class Formatter {
 		}
 	}
 	_getProcessedValue(val) {
-		console.trace();
 		let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
 		if (match) return match[1];
 		if (ALL_DIGITS_REGEX.test(val)) return parseInt(val);
