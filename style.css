@@ -44,10 +44,7 @@ article {
 	flex-direction: column;
 	gap: 8px;
 	overflow: visible;
-}
-article:has(#output) {
-	align-items: center;
-	justify-content: center;
+	position: relative;
 }
 article.overflow-auto {
 	overflow: auto;
@@ -118,6 +115,15 @@ input:not(:focus)[invalid] {
 }
 #output[shrink] {
 	font-size: 32pt;
+}
+#output-header {
+	position: absolute;
+}
+#output-container {
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+	justify-content: center;
 }
 
 #preview {
