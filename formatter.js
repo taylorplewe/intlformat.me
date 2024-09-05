@@ -118,7 +118,7 @@ export default class Formatter {
 			case 'month':
 			case 'day':
 			case 'year':
-				const otherOptionsAreSet = Object.entries(OPTIONS.dateTimeComponents)
+				const otherOptionsAreSet = Object.entries(OPTIONS['dates'].dateTimeComponents)
 					.filter(e => !['month', 'year', 'day'].includes(e[0]))
 					.some(e => this.options[e[0]] !== defaultFormatterForLocale[e[0]]);
 				return this.options.month === defaultFormatterForLocale.month

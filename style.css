@@ -54,6 +54,7 @@ h1, pre, p {
 }
 h1 {
 	color: var(--col-text-faint);
+	font-size: 1.5em;
 }
 code {
 	font-size: 16pt;
@@ -89,7 +90,28 @@ input:focus {
 input:not(:focus)[invalid] {
 	background-color: var(--col-bg-invalid);
 }
+input[type="radio"] {
+	appearance: none;
+}
 
+.slider-radio {
+	display: flex;
+	align-items: baseline;
+}
+.slider-radio > input[type="radio"] {
+	padding-inline: 32px;
+	cursor: pointer;
+	background-color: transparent;
+}
+.slider-radio > input[type="radio"]:checked {
+	background-color: var(--col-input-bg);
+}
+.slider-radio > input[type="radio"]:hover {
+	background-color: var(--col-input-bg-hover);
+}
+.slider-radio > input[type="radio"]::after {
+	content: attr(value);
+}
 .flex-grow {
 	flex-grow: 1;
 }
@@ -106,6 +128,10 @@ input:not(:focus)[invalid] {
 	color: var(--col-fg-invalid);
 }
 
+#code-mode-container {
+	display: flex;
+	gap: 16px;
+}
 #expression {
 	color: var(--col-text-faint);
 }
@@ -128,9 +154,15 @@ input:not(:focus)[invalid] {
 
 #preview {
 	display: grid;
+	/* grid-template-rows: auto 1fr 1fr; */
 	grid-template-rows: 1fr 1fr;
 	gap: 16px;
 	overflow: auto;
+}
+#mode-section {
+	flex-direction: row;
+	gap: 16px;
+	align-items: baseline;
 }
 #controls {
 	display: flex;

@@ -13,6 +13,13 @@
 	<body>
 		<main>
 			<div id="preview">
+				<!-- <article id="mode-section">
+					<h1>formatting</h1>
+					<div class="slider-radio">
+						<input type="radio" id="mode-date" name="mode" value="date">
+						<input type="radio" id="mode-number" name="mode" value="number">
+					</div>
+				</article> -->
 				<article class="overflow-auto">
 					<h1>code</h1>
 					<pre>
@@ -27,10 +34,15 @@
 				</article>
 			</div>
 			<div id="controls">
-				<article>
+				<article id="date-section">
 					<h1>date</h1>
 					<input id="date" prop="dateString"></input>
 					<p id="date-error" class="error-message"></p>
+				</article>
+				<article id="number-section" style="display: none;">
+					<h1>number</h1>
+					<input id="number" prop="dateString"></input>
+					<p id="number-error" class="error-message"></p>
 				</article>
 				<article>
 					<h1>locale</h1>

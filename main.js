@@ -15,7 +15,7 @@ const formatter = new Formatter(els);
 
 // create options elements
 let i = 0;
-for (const category of Object.entries(OPTIONS)) {
+for (const category of Object.entries(OPTIONS['dates'])) {
 	for (const entry of Object.entries(category[1])) {
 		const inputEl = document.createElement('div');
 		const labelEl = document.createElement('label');
@@ -24,7 +24,7 @@ for (const category of Object.entries(OPTIONS)) {
 		labelEl.setAttribute('for', `option-${entry[0]}`);
 		inputEl.appendChild(labelEl);
 
-		if (entry[1].length > 0) {
+		if (Array.isArray(entry[1])) {
 			const selectEl = document.createElement('select');
 			for (const option of entry[1]) {
 				const optionEl = document.createElement('option');
@@ -56,7 +56,7 @@ for (const category of Object.entries(OPTIONS)) {
 		els.optionsListEl.appendChild(inputEl);
 	}
 	i++;
-	if (i < Object.keys(OPTIONS).length) {
+	if (i < Object.keys(OPTIONS['dates']).length) {
 		els.optionsListEl.appendChild(document.createElement('hr'));
 	}
 }
