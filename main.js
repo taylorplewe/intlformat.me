@@ -76,7 +76,8 @@ const applyInput = (e, prop, el) => {
 
 for (const el of document.querySelectorAll('input')) {
 	const prop = el.getAttribute('prop');
-	el.addEventListener('focus', () => {
+	el.addEventListener('focus', e => {
+		e.preventDefault();
 		el.select();
 	});
 	el.addEventListener('keydown', e => applyInput(e, prop, el));
