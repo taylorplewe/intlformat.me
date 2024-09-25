@@ -128,6 +128,7 @@ input[type="radio"] {
 	display: flex;
 	justify-content: space-between;
 	align-items: baseline;
+	flex-wrap: wrap;
 }
 .labelled-input--full :nth-child(2) {
 	flex-grow: 1;
