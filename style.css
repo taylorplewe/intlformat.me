@@ -124,6 +124,15 @@ input[type="radio"] {
 .labelled-input :is(input, select) {
 	width: min(256px, 100%);
 }
+.labelled-input--full {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+.labelled-input--full :nth-child(2) {
+	flex-grow: 1;
+	max-width: 512px;
+}
 .error-message {
 	color: var(--col-fg-invalid);
 }
