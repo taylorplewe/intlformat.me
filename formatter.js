@@ -4,6 +4,8 @@ const LITERAL_MAP = {
 	'null': null,
 	'true': true,
 	'false': false,
+	'{}': {},
+	'[]': [],
 };
 const QUOTE_SURROUNDING_TEXT_REGEX = /^['"`](.*)['"`]$/;
 const ALL_DIGITS_REGEX = /^\d+$/;
@@ -155,6 +157,10 @@ export default class Formatter {
 		return val in LITERAL_MAP ? LITERAL_MAP[val] : val;
 	}
 	_getProcessedOutputString(val) {
-		return typeof val !== 'string' || !val.length ? `${val}` : `'${val}'`;
+		let literal;
+		if (literal = Object.entries(LITERAL_MAP).find(([_, lit]) => lit === val)) {
+			return literal[0];
+		}
+		return typeof val === 'string' ? `'${val}'` : `${val}`;
 	}
 }
