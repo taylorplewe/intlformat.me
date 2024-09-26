@@ -119,6 +119,7 @@ input[type="radio"] {
 	display: flex;
 	justify-content: space-between;
 	align-items: baseline;
+	gap: 16px;
 	max-width: 512px;
 }
 .labelled-input :is(input, select) {
@@ -128,6 +129,7 @@ input[type="radio"] {
 	display: flex;
 	justify-content: space-between;
 	align-items: baseline;
+	gap: 16px;
 	flex-wrap: wrap;
 }
 .labelled-input--full :nth-child(2) {
@@ -212,6 +214,9 @@ input[type="radio"] {
 	select, input {
 		width: 100%;
 	}
+	code {
+		font-size: 12pt;
+	}
 	#preview {
 		grid-template-rows: auto;
 	}
@@ -220,6 +225,9 @@ input[type="radio"] {
 	}
 	#output[shrink] {
 		font-size: 18pt;
+	}
+	#output-header {
+		position: static;
 	}
 	.labelled-input {
 		flex-direction: column;
