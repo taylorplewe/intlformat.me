@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strings"
 )
 
@@ -12,6 +13,16 @@ func main() {
 		if path == "" {
 			http.ServeFile(w, req, "index.html")
 		} else {
+			ext := filepath.Ext(path)
+			fmt.Println(ext)
+			switch ext {
+			case ".js":
+			case ".ts":
+			case ".svelte":
+				w.Header().Set("Content-Type", "application/javascript")
+			case ".css":
+				w.Header().Set("Content-Type", "text/css")
+			}
 			http.ServeFile(w, req, path)
 		}
 	})

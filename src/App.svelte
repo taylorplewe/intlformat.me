@@ -38,12 +38,12 @@ const formatter = new Formatter();
     <article id="options" class="flex-grow overflow-auto">
       <h1>options</h1>
       <div id="options-list">
-        {#each OPTIONS as { name, type, default: defaultValue }}
+        <!-- {#each OPTIONS as option}
           <div class="labelled-input">
             <label for="option-{name}">{name}</label>
             <input id="option-{name}" value={defaultValue} type={type} />
           </div>
-        {/each}
+        {/each} -->
       </div>
     </article>
   </div>

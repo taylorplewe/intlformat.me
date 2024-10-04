@@ -29,18 +29,18 @@ export default class Formatter {
         return this._locale;
     }
 	set locale(val: string) {
-		this._locale = this._getProcessedValue(val);
+		this._locale = <string>this._getProcessedValue(val);
 		try {
 			this._errorMessages.locale = '';
 			this._formatter = new Intl.DateTimeFormat(this._locale, this.options);
 		} catch ({ message }: any) {
 			this._errorMessages.locale = message;
 		}
-		this.updateEls();
+		//this.updateEls();
 	}
 	set dateString(val: string) {
-		this._dateInput = this._getProcessedValue(val.toLowerCase());
-		this.updateEls();
+		this._dateInput = <string>this._getProcessedValue(val.toLowerCase());
+		//this.updateEls();
 	}
 
 	get options(): Intl.ResolvedDateTimeFormatOptions {
@@ -82,41 +82,41 @@ export default class Formatter {
 
 	setOption(option: string, val: string) {
 		this._formatter = new Intl.DateTimeFormat(this._locale, { ...structuredClone(this.options), [option]: this._getProcessedValue(val) });
-		this.updateEls();
+		//this.updateEls();
 	}
-	updateEls() {
-		this._els.dateErrorEl.style.display = 'none';
-		this._els.localeErrorEl.style.display = 'none';
-		this._els.dateEl.removeAttribute('invalid');
-		this._els.localeEl.removeAttribute('invalid');
+	// updateEls() {
+	// 	this._els.dateErrorEl.style.display = 'none';
+	// 	this._els.localeErrorEl.style.display = 'none';
+	// 	this._els.dateEl.removeAttribute('invalid');
+	// 	this._els.localeEl.removeAttribute('invalid');
 
-		this._els.expressionEl.textContent = this.expressionText;
-		this._els.outputEl.textContent = this.outputText;
-		this._els.outputEl.removeAttribute('shrink');
-		if (this._els.outputEl.getBoundingClientRect().width > this._els.outputEl.parentNode.getBoundingClientRect().width * 0.75) this._els.outputEl.setAttribute('shrink', '');
+	// 	this._els.expressionEl.textContent = this.expressionText;
+	// 	this._els.outputEl.textContent = this.outputText;
+	// 	this._els.outputEl.removeAttribute('shrink');
+	// 	if (this._els.outputEl.getBoundingClientRect().width > this._els.outputEl.parentNode.getBoundingClientRect().width * 0.75) this._els.outputEl.setAttribute('shrink', '');
 
-		// error handling
-		if (this._errorMessages.date) {
-			this._els.dateEl.setAttribute('invalid', '');
-			this._els.dateErrorEl.style.display = 'block';
-			this._els.dateErrorEl.textContent = this._errorMessages.date;
-		}
-		if (this._errorMessages.locale) {
-			this._els.localeEl.setAttribute('invalid', '');
-			this._els.localeErrorEl.style.display = 'block';
-			this._els.localeErrorEl.textContent = this._errorMessages.locale;
-		}
+	// 	// error handling
+	// 	if (this._errorMessages.date) {
+	// 		this._els.dateEl.setAttribute('invalid', '');
+	// 		this._els.dateErrorEl.style.display = 'block';
+	// 		this._els.dateErrorEl.textContent = this._errorMessages.date;
+	// 	}
+	// 	if (this._errorMessages.locale) {
+	// 		this._els.localeEl.setAttribute('invalid', '');
+	// 		this._els.localeErrorEl.style.display = 'block';
+	// 		this._els.localeErrorEl.textContent = this._errorMessages.locale;
+	// 	}
 
-		// update date & locale
-		this._els.dateEl.value = this._getProcessedOutputString(this._dateInput);
-		this._els.localeEl.value = this._getProcessedOutputString(this._locale);
+	// 	// update date & locale
+	// 	this._els.dateEl.value = this._getProcessedOutputString(this._dateInput);
+	// 	this._els.localeEl.value = this._getProcessedOutputString(this._locale);
 
-		// update all option values
-		for (const el of this._els.optionsListEl.querySelectorAll('select, input')) {
-			const prop = el.id.replace('option-', '');
-			el.value = this.options[prop];
-		}
-	}
+	// 	// update all option values
+	// 	for (const el of this._els.optionsListEl.querySelectorAll('select, input')) {
+	// 		const prop = el.id.replace('option-', '');
+	// 		el.value = this.options[prop];
+	// 	}
+	// }
 	_showOption({ 0: optionName, 1: value }: { 0: string, 1: string}) {
 		let defaultFormatterForLocale: Intl.ResolvedDateTimeFormatOptions;
 		try {
