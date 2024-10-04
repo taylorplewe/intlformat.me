@@ -1,5 +1,5 @@
 const TAB = '  ';
-const LITERAL_MAP: Record<string, undefined | null | boolean> = {
+const LITERAL_MAP: Record<string, undefined | null | boolean | Array<null>> = {
 	'undefined': undefined,
 	'null': null,
 	'true': true,
@@ -83,41 +83,7 @@ export default class Formatter {
 
 	setOption(option: string, val: string) {
 		this._formatter = new Intl.DateTimeFormat(this._locale, { ...structuredClone(this.options), [option]: this._getProcessedValue(val) });
-		//this.updateEls();
 	}
-	// updateEls() {
-	// 	this._els.dateErrorEl.style.display = 'none';
-	// 	this._els.localeErrorEl.style.display = 'none';
-	// 	this._els.dateEl.removeAttribute('invalid');
-	// 	this._els.localeEl.removeAttribute('invalid');
-
-	// 	this._els.expressionEl.textContent = this.expressionText;
-	// 	this._els.outputEl.textContent = this.outputText;
-	// 	this._els.outputEl.removeAttribute('shrink');
-	// 	if (this._els.outputEl.getBoundingClientRect().width > this._els.outputEl.parentNode.getBoundingClientRect().width * 0.75) this._els.outputEl.setAttribute('shrink', '');
-
-	// 	// error handling
-	// 	if (this._errorMessages.date) {
-	// 		this._els.dateEl.setAttribute('invalid', '');
-	// 		this._els.dateErrorEl.style.display = 'block';
-	// 		this._els.dateErrorEl.textContent = this._errorMessages.date;
-	// 	}
-	// 	if (this._errorMessages.locale) {
-	// 		this._els.localeEl.setAttribute('invalid', '');
-	// 		this._els.localeErrorEl.style.display = 'block';
-	// 		this._els.localeErrorEl.textContent = this._errorMessages.locale;
-	// 	}
-
-	// 	// update date & locale
-	// 	this._els.dateEl.value = this._getProcessedOutputString(this._dateInput);
-	// 	this._els.localeEl.value = this._getProcessedOutputString(this._locale);
-
-	// 	// update all option values
-	// 	for (const el of this._els.optionsListEl.querySelectorAll('select, input')) {
-	// 		const prop = el.id.replace('option-', '');
-	// 		el.value = this.options[prop];
-	// 	}
-	// }
 	_showOption({ 0: optionName, 1: value }: { 0: string, 1: string}) {
 		let defaultFormatterForLocale: Intl.ResolvedDateTimeFormatOptions;
 		try {
@@ -163,9 +129,11 @@ export default class Formatter {
 		let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
 		if (match) return match[1];
 		if (ALL_DIGITS_REGEX.test(val)) return parseInt(val);
+		if (val.startsWith('[') || val.startsWith('{')) val = JSON.parse(val);
 		return val in LITERAL_MAP ? LITERAL_MAP[val] : val;
 	}
-	_getProcessedOutputString(val: string) {
+	_getProcessedOutputString(val: any): string {
+		if (typeof val === 'object') return JSON.stringify(val);
 		return typeof val !== 'string' || !val.length ? `${val}` : `'${val}'`;
 	}
 }
