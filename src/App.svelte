@@ -3,6 +3,27 @@ import Formatter from './lib/formatter.js';
 import OPTIONS from './lib/options.js';
 
 const formatter = new Formatter();
+
+let locale = formatter.locale;
+let dateString = formatter.dateString;
+const onLocaleSubmit = e => {
+	if ('key' in e) {
+		e.key === 'Enter' && e.target.blur();
+		return;
+	}
+	formatter.locale = locale;
+	locale = formatter.locale;
+}
+const onDateSubmit = e => {
+	if ('key' in e) {
+		e.key === 'Enter' && e.target.blur();
+		return;
+	}
+	formatter.dateString = dateString;
+	dateString = formatter.dateString;
+}
+
+const selectInputEl = ({ target }) => target.select();
 </script>
 
 <main>
@@ -10,27 +31,41 @@ const formatter = new Formatter();
     <article class="overflow-auto">
       <h1>code</h1>
       <pre>
-<code id="expression"></code>
+<code id="expression">{formatter.expressionText}</code>
       </pre>
     </article>
     <article class="flex-grow">
       <div id="output-header"><h1>output</h1></div>
       <div id="output-container">
-        <code id="output"></code>
+        <code id="output">{formatter.outputText}</code>
       </div>
     </article>
   </div>
   <div id="controls">
     <article id="date-section">
-      <h1>date</h1>
-      <input bind:value={formatter.dateString} />
+	  <div class="labelled-input--full">
+		<h1>date</h1>
+		<input
+		  bind:value={dateString}
+		  on:blur={onDateSubmit}
+		  on:keydown={onDateSubmit}
+		  on:focus={selectInputEl}
+		/>
+	  </div>
       {#if formatter.errorMessages.date}
         <p class="error-message">{formatter.errorMessages.date}</p>
       {/if}
     </article>
     <article>
-      <h1>locale</h1>
-      <input bind:value={formatter.locale} />
+	  <div class="labelled-input--full">
+		<h1>locale</h1>
+		<input
+		  bind:value={locale}
+		  on:blur={onLocaleSubmit}
+		  on:keydown={onLocaleSubmit}
+		  on:focus={selectInputEl}
+		/>
+	  </div>
       {#if formatter.errorMessages.locale}
         <p class="error-message">{formatter.errorMessages.locale}</p>
       {/if}
@@ -178,6 +213,17 @@ input[type="radio"] {
 }
 .labelled-input :is(input, select) {
 	width: min(256px, 100%);
+}
+.labelled-input--full {
+	display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.labelled-input--full :nth-child(2) {
+	flex-grow: 1;
+    max-width: 512px;
 }
 .error-message {
 	color: var(--col-fg-invalid);

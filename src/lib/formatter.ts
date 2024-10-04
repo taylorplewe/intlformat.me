@@ -26,7 +26,7 @@ export default class Formatter {
 	}
 
     get locale(): string | undefined {
-        return this._locale;
+        return this._getProcessedOutputString(this._locale);
     }
 	set locale(val: string) {
 		this._locale = <string>this._getProcessedValue(val);
@@ -36,15 +36,16 @@ export default class Formatter {
 		} catch ({ message }: any) {
 			this._errorMessages.locale = message;
 		}
-		//this.updateEls();
 	}
 	set dateString(val: string) {
 		this._dateInput = <string>this._getProcessedValue(val.toLowerCase());
-		//this.updateEls();
+	}
+	get dateString(): string {
+		return this._getProcessedOutputString(this._dateInput);
 	}
 
-	get options(): Intl.ResolvedDateTimeFormatOptions {
-		return this._formatter.resolvedOptions();
+	get options(): Intl.DateTimeFormatOptions {
+		return <Intl.DateTimeFormatOptions>this._formatter.resolvedOptions();
 	}
 	get optionsText(): string {
 		return Object.entries(this.options)
@@ -139,7 +140,7 @@ export default class Formatter {
 			case 'locale':
 				return false;
 			case 'hour12':
-				let defaultHourFormatterForLocale = {};
+				let defaultHourFormatterForLocale = <Intl.ResolvedDateTimeFormatOptions>{};
 				try {
 					defaultHourFormatterForLocale = new Intl.DateTimeFormat(this._locale, { hour: this.options.hour }).resolvedOptions();
 					return this.options.hour12 !== defaultHourFormatterForLocale.hour12;
@@ -147,7 +148,7 @@ export default class Formatter {
 					return false;
 				}
 			case 'hourCycle':
-				let defaultHour12FormatterForLocale = {};
+				let defaultHour12FormatterForLocale = <Intl.ResolvedDateTimeFormatOptions>{};
 				try {
 					defaultHour12FormatterForLocale = new Intl.DateTimeFormat(this._locale, { hour: this.options.hour, hour12: this.options.hour12 }).resolvedOptions();
 					return this.options.hourCycle !== defaultHour12FormatterForLocale.hourCycle;
