@@ -124,6 +124,17 @@ input[type="radio"] {
 .labelled-input :is(input, select) {
 	width: min(256px, 100%);
 }
+.labelled-input--full {
+	display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.labelled-input--full :nth-child(2) {
+	flex-grow: 1;
+    max-width: 512px;
+}
 .error-message {
 	color: var(--col-fg-invalid);
 }
@@ -139,7 +150,7 @@ input[type="radio"] {
 	font-size: 42pt;
 	color: var(--col-text-light);
 }
-#output[shrink] {
+#output.shrink {
 	font-size: 32pt;
 }
 #output-header {
@@ -158,11 +169,6 @@ input[type="radio"] {
 	grid-template-rows: 1fr 1fr;
 	gap: 16px;
 	overflow: auto;
-}
-#mode-section {
-	flex-direction: row;
-	gap: 16px;
-	align-items: baseline;
 }
 #controls {
 	display: flex;

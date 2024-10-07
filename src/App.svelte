@@ -1,8 +1,19 @@
 <script lang="ts">
+import { tick } from 'svelte';
+
 import Formatter from './lib/formatter';
 import OPTIONS from './lib/options';
 
 const formatter = new Formatter();
+
+let outputEl: HTMLElement | null = null;
+let outputShrink: boolean = false;
+$: formatter.outputText && updateOutputShrink();
+const updateOutputShrink = async (): Promise<void> => {
+	await tick();
+	if (!outputEl || !outputEl.parentNode) return;
+	outputShrink = outputEl.getBoundingClientRect().width > outputEl.parentNode.getBoundingClientRect().width * 0.75;
+}
 
 let locale = formatter.locale;
 let dateString = formatter.dateString;
@@ -52,7 +63,7 @@ const selectOption = (e: Event, key: string): void => {
     <article class="flex-grow">
       <div id="output-header"><h1>output</h1></div>
       <div id="output-container">
-        <code id="output">{formatter.outputText}</code>
+        <code id="output" bind:this={outputEl} class="{outputShrink ? 'shrink' : ''}">{formatter.outputText}</code>
       </div>
     </article>
   </div>
@@ -88,7 +99,7 @@ const selectOption = (e: Event, key: string): void => {
     <article id="options" class="flex-grow overflow-auto">
       <h1>options</h1>
       <div id="options-list">
-		{#each Object.entries(OPTIONS.dates) as [, options]}
+		{#each Object.entries(OPTIONS.dates) as [, options], index}
 		  {#each Object.entries(options) as [key, values]}
 		    <div class="labelled-input">
 			  <label for={`option-${key}`}>{key}</label>
@@ -115,7 +126,9 @@ const selectOption = (e: Event, key: string): void => {
 			  {/if}
 		    </div>
 		  {/each}
-		  <hr />
+		  {#if index < Object.keys(OPTIONS.dates).length - 1}
+		    <hr />
+		  {/if}
 		{/each}
       </div>
     </article>
@@ -124,234 +137,3 @@ const selectOption = (e: Event, key: string): void => {
 <footer>
   Taylor Plewe, 2024 -&nbsp;<a href="https://github.com/taylorplewe/intlformat.me" target="_blank">GitHub repo</a>
 </footer>
-
-<style>
-:root {
-	--col-bg: #222;
-	--col-subsection: #2b2b2b;
-	--col-input-bg: #333;
-	--col-input-bg-hover: #444;
-	--col-text-light: #eee;
-	--col-text-mid: #aaa;
-	--col-text-faint: #777;
-	--col-border-light: #eee;
-	--col-fg-invalid: #b44;
-	--col-bg-invalid: #533;
-}
-
-body {
-	background-color: var(--col-bg);
-	font-family: 'Red Hat Mono', monospace;
-	color: var(--col-text-light);
-	margin: 0;
-	overflow: hidden;
-}
-main {
-	height: calc(100vh - 16px);
-	box-sizing: border-box;
-	padding: 16px 16px 0 16px;
-	display: grid;
-	grid-template-columns: 60% auto;
-	gap: 16px;
-}
-footer {
-	margin-right: 16px;
-	height: 16px;
-	color: var(--col-text-faint);
-	display: flex;
-	justify-content: flex-end;
-}
-footer a {
-	color: var(--col-text-mid);
-}
-article {
-	background-color: var(--col-subsection);
-	border-radius: 16px;
-	padding: 24px;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	overflow: visible;
-	position: relative;
-}
-article.overflow-auto {
-	overflow: auto;
-}
-h1, pre, p {
-	margin: 0;
-}
-h1 {
-	color: var(--col-text-faint);
-	font-size: 1.5em;
-}
-code {
-	font-size: 16pt;
-}
-select, input {
-	border: none;
-	color: var(--col-text-light);
-	font-size: 16pt;
-	font-family: 'Red Hat Mono', monospace;
-	background-color: var(--col-input-bg);
-	padding: 8px;
-	border-radius: 8px;
-	transition: background-color 0.2s ease;
-	box-sizing: border-box;
-	min-height: 46px;
-}
-select {
-	cursor: pointer;
-}
-hr {
-	border: 0;
-	border-top: 1px solid var(--col-text-faint);
-	width: 100%;
-	margin: 24px 0 24px 0;
-}
-input:hover {
-	background-color: var(--col-input-bg-hover);
-}
-input:focus {
-    box-shadow: inset 0 0 1px var(--col-border-light);
-	background: transparent;
-}
-input:not(:focus)[invalid] {
-	background-color: var(--col-bg-invalid);
-}
-input[type="radio"] {
-	appearance: none;
-}
-
-.slider-radio {
-	display: flex;
-	align-items: baseline;
-}
-.slider-radio > input[type="radio"] {
-	padding-inline: 32px;
-	cursor: pointer;
-	background-color: transparent;
-}
-.slider-radio > input[type="radio"]:checked {
-	background-color: var(--col-input-bg);
-}
-.slider-radio > input[type="radio"]:hover {
-	background-color: var(--col-input-bg-hover);
-}
-.slider-radio > input[type="radio"]::after {
-	content: attr(value);
-}
-.flex-grow {
-	flex-grow: 1;
-}
-.labelled-input {
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	max-width: 512px;
-}
-.labelled-input :is(input, select) {
-	width: min(256px, 100%);
-}
-.labelled-input--full {
-	display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-.labelled-input--full :nth-child(2) {
-	flex-grow: 1;
-    max-width: 512px;
-}
-.error-message {
-	color: var(--col-fg-invalid);
-}
-
-#code-mode-container {
-	display: flex;
-	gap: 16px;
-}
-#expression {
-	color: var(--col-text-faint);
-}
-#output {
-	font-size: 42pt;
-	color: var(--col-text-light);
-}
-#output[shrink] {
-	font-size: 32pt;
-}
-#output-header {
-	position: absolute;
-}
-#output-container {
-	display: flex;
-	flex-grow: 1;
-	align-items: center;
-	justify-content: center;
-}
-
-#preview {
-	display: grid;
-	/* grid-template-rows: auto 1fr 1fr; */
-	grid-template-rows: 1fr 1fr;
-	gap: 16px;
-	overflow: auto;
-}
-#mode-section {
-	flex-direction: row;
-	gap: 16px;
-	align-items: baseline;
-}
-#controls {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-	overflow: auto;
-}
-#options label {
-	font-size: 14pt;
-	color: var(--col-text-faint);
-}
-#options-list {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	overflow: auto;
-}
-#options-list .text-input[empty]::after {
-	font-style: italic;
-	opacity: .4;
-	content: 'enter text...';
-}
-
-@media screen and (max-width: 1200px) {
-	body {
-		overflow: initial;
-	}
-	main {
-		height: initial;
-		grid-template-columns: auto;
-	}
-	footer {
-		justify-content: center;
-		margin-top: 8px;
-		padding-bottom: 64px;
-	}
-	select, input {
-		width: 100%;
-	}
-	#preview {
-		grid-template-rows: auto;
-	}
-	#output {
-		font-size: 24pt;
-	}
-	#output[shrink] {
-		font-size: 18pt;
-	}
-	.labelled-input {
-		flex-direction: column;
-	}
-}
-</style>
