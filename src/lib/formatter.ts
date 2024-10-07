@@ -7,7 +7,7 @@ const LITERAL_MAP: Record<string, undefined | null | boolean | Array<null>> = {
 };
 const QUOTE_SURROUNDING_TEXT_REGEX = /^['"`](.*)['"`]$/;
 const ALL_DIGITS_REGEX = /^\d+$/;
-import OPTIONS from './options.js';
+import OPTIONS from './options';
 
 export default class Formatter {
     _formatter: Intl.DateTimeFormat;

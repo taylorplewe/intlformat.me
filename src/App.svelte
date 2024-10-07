@@ -1,29 +1,33 @@
 <script lang="ts">
-import Formatter from './lib/formatter.js';
-import OPTIONS from './lib/options.js';
+import Formatter from './lib/formatter';
+import OPTIONS from './lib/options';
 
 const formatter = new Formatter();
 
 let locale = formatter.locale;
 let dateString = formatter.dateString;
-const onLocaleSubmit = e => {
+const onLocaleSubmit = (e: Event): void => {
 	if ('key' in e) {
-		e.key === 'Enter' && e.target.blur();
+		e.key === 'Enter' && (e.target as HTMLElement)?.blur();
 		return;
 	}
 	formatter.locale = locale;
 	locale = formatter.locale;
 }
-const onDateSubmit = e => {
+const onDateSubmit = (e: Event): void => {
 	if ('key' in e) {
-		e.key === 'Enter' && e.target.blur();
+		e.key === 'Enter' && (e.target as HTMLElement)?.blur();
 		return;
 	}
 	formatter.dateString = dateString;
 	dateString = formatter.dateString;
 }
 
-const selectInputEl = ({ target }) => target.select();
+const selectInputEl =
+	({ target }: { target: EventTarget | null }): void =>
+		(target as HTMLInputElement)?.select();
+
+const changeEvent = e => console.log(e);
 </script>
 
 <main>
@@ -73,6 +77,17 @@ const selectInputEl = ({ target }) => target.select();
     <article id="options" class="flex-grow overflow-auto">
       <h1>options</h1>
       <div id="options-list">
+		{#each Object.entries(OPTIONS.dates.locale) as [key, values]}
+		  {#if Array.isArray(values)}
+		    <select id={`option-${key}`} class="input" on:change={changeEvent}>
+		  	  {#each values as value}
+		  	    <option value={value}>{value}</option>
+		  	  {/each}
+		    </select>
+		  {/if}
+		{/each}
+
+
         <!-- {#each OPTIONS as option}
           <div class="labelled-input">
             <label for="option-{name}">{name}</label>
