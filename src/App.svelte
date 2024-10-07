@@ -72,6 +72,7 @@ const selectOption = (e: Event, key: string): void => {
 	  <div class="labelled-input--full">
 		<h1>date</h1>
 		<input
+		  class="{formatter.errorMessages.date ? 'invalid' : ''}"
 		  bind:value={dateString}
 		  on:blur={onDateSubmit}
 		  on:keydown={onDateSubmit}
@@ -86,6 +87,7 @@ const selectOption = (e: Event, key: string): void => {
 	  <div class="labelled-input--full">
 		<h1>locale</h1>
 		<input
+		  class="{formatter.errorMessages.locale ? 'invalid' : ''}"
 		  bind:value={locale}
 		  on:blur={onLocaleSubmit}
 		  on:keydown={onLocaleSubmit}

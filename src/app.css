@@ -87,7 +87,7 @@ input:focus {
     box-shadow: inset 0 0 1px var(--col-border-light);
 	background: transparent;
 }
-input:not(:focus)[invalid] {
+input:not(:focus).invalid {
 	background-color: var(--col-bg-invalid);
 }
 input[type="radio"] {

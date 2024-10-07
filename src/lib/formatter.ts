@@ -6,7 +6,7 @@ const LITERAL_MAP: Record<string, undefined | null | boolean | Array<null>> = {
 	'false': false,
 };
 const QUOTE_SURROUNDING_TEXT_REGEX = /^['"`](.*)['"`]$/;
-const ALL_DIGITS_REGEX = /^\d+$/;
+const ALL_DIGITS_REGEX = /^-?\d+$/;
 import OPTIONS from './options';
 
 export default class Formatter {
