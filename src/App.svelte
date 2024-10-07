@@ -22,12 +22,23 @@ const onDateSubmit = (e: Event): void => {
 	formatter.dateString = dateString;
 	dateString = formatter.dateString;
 }
+const onOptionSubmit = (e: Event, key: string): void => {
+	if ('key' in e) {
+		e.key === 'Enter' && (e.target as HTMLElement)?.blur();
+		return;
+	}
+	formatter.setOption(key, (e.target as HTMLInputElement).value);
+}
 
 const selectInputEl =
 	({ target }: { target: EventTarget | null }): void =>
 		(target as HTMLInputElement)?.select();
 
-const changeEvent = e => console.log(e);
+const selectOption = (e: Event, key: string): void => {
+	const { value } = e.target as HTMLSelectElement;
+	formatter.setOption(key, value);
+	formatter.dateString = dateString; // trigger re-render
+}
 </script>
 
 <main>
@@ -77,23 +88,35 @@ const changeEvent = e => console.log(e);
     <article id="options" class="flex-grow overflow-auto">
       <h1>options</h1>
       <div id="options-list">
-		{#each Object.entries(OPTIONS.dates.locale) as [key, values]}
-		  {#if Array.isArray(values)}
-		    <select id={`option-${key}`} class="input" on:change={changeEvent}>
-		  	  {#each values as value}
-		  	    <option value={value}>{value}</option>
-		  	  {/each}
-		    </select>
-		  {/if}
+		{#each Object.entries(OPTIONS.dates) as [, options]}
+		  {#each Object.entries(options) as [key, values]}
+		    <div class="labelled-input">
+			  <label for={`option-${key}`}>{key}</label>
+			  {#if Array.isArray(values)}
+			    <select
+				  value={formatter.options[key] || 'undefined'}
+				  id={`option-${key}`}
+				  class="input"
+				  on:change={e => selectOption(e, key)}
+				>
+				  {#each values as value}
+				    <option value={value}>{value}</option>
+				  {/each}
+			    </select>
+			  {:else}
+			    <input
+				  value={formatter.options[key]}
+				  type="text"
+				  id={`option-${key}`}
+				  on:blur={e => onOptionSubmit(e, key)}
+				  on:keydown={e => onOptionSubmit(e, key)}
+				  on:focus={selectInputEl}
+				/>
+			  {/if}
+		    </div>
+		  {/each}
+		  <hr />
 		{/each}
-
-
-        <!-- {#each OPTIONS as option}
-          <div class="labelled-input">
-            <label for="option-{name}">{name}</label>
-            <input id="option-{name}" value={defaultValue} type={type} />
-          </div>
-        {/each} -->
       </div>
     </article>
   </div>
