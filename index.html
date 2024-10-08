@@ -1,61 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>intlformat.me</title>
-		<link rel="icon" href="https://www.intlformat.me/favicon.png">
-		<link rel="stylesheet" href="style.css">
-		<script src="main.js" type="module"></script>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>intlformat.me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
-	</head>
-	<body>
-		<main>
-			<div id="preview">
-				<!-- <article id="mode-section">
-					<h1>formatting</h1>
-					<div class="slider-radio">
-						<input type="radio" id="mode-date" name="mode" value="date">
-						<input type="radio" id="mode-number" name="mode" value="number">
-					</div>
-				</article> -->
-				<article class="overflow-auto">
-					<h1>code</h1>
-					<pre>
-<code id="expression"></code>
-					</pre>
-				</article>
-				<article class="flex-grow">
-					<div id="output-header"><h1>output</h1></div>
-					<div id="output-container">
-						<code id="output"></code>
-					</div>
-				</article>
-			</div>
-			<div id="controls">
-				<article id="date-section">
-					<div class="labelled-input--full">
-						<h1>date</h1>
-						<input id="date" prop="dateString" maxlength="32"></input>
-					</div>
-					<p id="date-error" class="error-message"></p>
-				</article>
-				<article>
-					<div class="labelled-input--full">
-						<h1>locale</h1>
-						<input id="locale" prop="locale" maxlength="32"></input>
-					</div>
-					<p id="locale-error" class="error-message"></p>
-				</article>
-				<article id="options" class="flex-grow overflow-auto">
-					<h1>options</h1>
-					<div id="options-list"></div>
-				</article>
-			</div>
-		</main>
-		<footer>
-			Taylor Plewe, 2024 -&nbsp;<a href="https://github.com/taylorplewe/intlformat.me" target="_blank">GitHub repo</a>
-		</footer>
-	</body>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>
