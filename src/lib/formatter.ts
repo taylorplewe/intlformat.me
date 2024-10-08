@@ -114,8 +114,7 @@ export default class Formatter {
 	}
 	_getProcessedValue(val: string): any  {
 		try {
-			const ret = JSON.parse(val);
-			return ret;
+			return JSON.parse(val);
 		} catch {
 			let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
 			if (match) return match[1];
