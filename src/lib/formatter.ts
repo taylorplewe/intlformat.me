@@ -1,24 +1,19 @@
 const TAB = '  ';
-const LITERAL_MAP: Record<string, undefined | null | boolean | Array<null>> = {
-	'undefined': undefined,
-	'null': null,
-	'true': true,
-	'false': false,
-};
 const QUOTE_SURROUNDING_TEXT_REGEX = /^['"`](.*)['"`]$/;
-const ALL_DIGITS_REGEX = /^-?\d+$/;
 import OPTIONS from './options';
 
 export default class Formatter {
     _formatter: Intl.DateTimeFormat;
-    _locale: string | undefined;
-    _dateInput: string;
+    _locale: string | null | undefined | object;
+    _dateInput: string | null | undefined | object;
+	_dateIsEmpty: boolean;
     _errorMessages: { locale: string; date: string; };
 
 	constructor() {
 		this._formatter = new Intl.DateTimeFormat();
 		this._locale = undefined;
 		this._dateInput = '07/02/1997';
+		this._dateIsEmpty = false;
 		this._errorMessages = {
 			locale: '',
 			date: '',
@@ -29,7 +24,7 @@ export default class Formatter {
         return this._getProcessedOutputString(this._locale);
     }
 	set locale(val: string) {
-		this._locale = <string>this._getProcessedValue(val);
+		this._locale = this._getProcessedValue(val);
 		try {
 			this._errorMessages.locale = '';
 			this._formatter = new Intl.DateTimeFormat(this._locale, this.options);
@@ -38,10 +33,11 @@ export default class Formatter {
 		}
 	}
 	set dateString(val: string) {
-		this._dateInput = <string>this._getProcessedValue(val.toLowerCase());
+		this._dateIsEmpty = val === '';
+		this._dateInput = this._getProcessedValue(val);
 	}
 	get dateString(): string {
-		return this._getProcessedOutputString(this._dateInput);
+		return this._dateIsEmpty ? '' : this._getProcessedOutputString(this._dateInput);
 	}
 
 	get options(): Intl.DateTimeFormatOptions {
@@ -54,23 +50,14 @@ export default class Formatter {
 			.join(`,\n${TAB}${TAB}`);
 	}
 	get expressionText(): string {
-		const localeText = this._getProcessedOutputString(this._locale);
-		const dateText = this._getProcessedOutputString(this._dateInput);
 		const secondParamText = this.optionsText.length ? `,\n${TAB}{\n${TAB}${TAB}${this.optionsText}\n${TAB}}` : '';
-		return `Intl.DateTimeFormat(\n${TAB}${localeText}${secondParamText}\n).format(new Date(${dateText}));`;
+		return `Intl.DateTimeFormat(\n${TAB}${this.locale}${secondParamText}\n).format(new Date(${this.dateString}));`;
 	}
 	get outputText(): string {
 		let output = '';
 		try {
 			this._errorMessages.date = '';
-			let date: Date;
-			switch (typeof this._dateInput) {
-				case 'string':
-					date = this._dateInput ? new Date(this._dateInput) : new Date();
-					break;
-				default:
-					date = new Date(this._dateInput);
-			}
+			let date = this._dateIsEmpty ? new Date() : new Date(this._dateInput);
 			output = this._formatter.format(date);
 		} catch ({ message }: any) {
 			this._errorMessages.date = message;
@@ -125,15 +112,17 @@ export default class Formatter {
 				return value !== defaultFormatterForLocale[optionName];
 		}
 	}
-	_getProcessedValue(val: string) {
-		let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
-		if (match) return match[1];
-		if (ALL_DIGITS_REGEX.test(val)) return parseInt(val);
-		if (val.startsWith('[') || val.startsWith('{')) val = JSON.parse(val);
-		return val in LITERAL_MAP ? LITERAL_MAP[val] : val;
+	_getProcessedValue(val: string): any  {
+		try {
+			const ret = JSON.parse(val);
+			return ret;
+		} catch {
+			let match = val.match(QUOTE_SURROUNDING_TEXT_REGEX);
+			if (match) return match[1];
+			return val === 'undefined' ? undefined : val;
+		}
 	}
 	_getProcessedOutputString(val: any): string {
-		if (typeof val === 'object') return JSON.stringify(val);
-		return typeof val !== 'string' || !val.length ? `${val}` : `'${val}'`;
+		return JSON.stringify(val);
 	}
 }
