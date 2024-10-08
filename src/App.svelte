@@ -53,89 +53,89 @@ const selectOption = (e: Event, key: string): void => {
 </script>
 
 <main>
-  <div id="preview">
-    <article class="overflow-auto">
-      <h1>code</h1>
-      <pre>
+	<div id="preview">
+		<article class="overflow-auto">
+			<h1>code</h1>
+			<pre>
 <code id="expression">{formatter.expressionText}</code>
-      </pre>
-    </article>
-    <article class="flex-grow">
-      <div id="output-header"><h1>output</h1></div>
-      <div id="output-container">
-        <code id="output" bind:this={outputEl} class="{outputShrink ? 'shrink' : ''}">{formatter.outputText}</code>
-      </div>
-    </article>
-  </div>
-  <div id="controls">
-    <article id="date-section">
-	  <div class="labelled-input--full">
-		<h1>date</h1>
-		<input
-		  class="{formatter.errorMessages.date ? 'invalid' : ''}"
-		  bind:value={dateString}
-		  on:blur={onDateSubmit}
-		  on:keydown={onDateSubmit}
-		  on:focus={selectInputEl}
-		/>
-	  </div>
-      {#if formatter.errorMessages.date}
-        <p class="error-message">{formatter.errorMessages.date}</p>
-      {/if}
-    </article>
-    <article>
-	  <div class="labelled-input--full">
-		<h1>locale</h1>
-		<input
-		  class="{formatter.errorMessages.locale ? 'invalid' : ''}"
-		  bind:value={locale}
-		  on:blur={onLocaleSubmit}
-		  on:keydown={onLocaleSubmit}
-		  on:focus={selectInputEl}
-		/>
-	  </div>
-      {#if formatter.errorMessages.locale}
-        <p class="error-message">{formatter.errorMessages.locale}</p>
-      {/if}
-    </article>
-    <article id="options" class="flex-grow overflow-auto">
-      <h1>options</h1>
-      <div id="options-list">
-		{#each Object.entries(OPTIONS.dates) as [, options], index}
-		  {#each Object.entries(options) as [key, values]}
-		    <div class="labelled-input">
-			  <label for={`option-${key}`}>{key}</label>
-			  {#if Array.isArray(values)}
-			    <select
-				  value={formatter.options[key] || 'undefined'}
-				  id={`option-${key}`}
-				  class="input"
-				  on:change={e => selectOption(e, key)}
-				>
-				  {#each values as value}
-				    <option value={value}>{value}</option>
-				  {/each}
-			    </select>
-			  {:else}
-			    <input
-				  value={formatter.options[key]}
-				  type="text"
-				  id={`option-${key}`}
-				  on:blur={e => onOptionSubmit(e, key)}
-				  on:keydown={e => onOptionSubmit(e, key)}
-				  on:focus={selectInputEl}
-				/>
-			  {/if}
-		    </div>
-		  {/each}
-		  {#if index < Object.keys(OPTIONS.dates).length - 1}
-		    <hr />
-		  {/if}
-		{/each}
-      </div>
-    </article>
-  </div>
+			</pre>
+		</article>
+		<article class="flex-grow">
+			<div id="output-header"><h1>output</h1></div>
+			<div id="output-container">
+				<code id="output" bind:this={outputEl} class="{outputShrink ? 'shrink' : ''}">{formatter.outputText}</code>
+			</div>
+		</article>
+	</div>
+	<div id="controls">
+		<article id="date-section">
+			<div class="labelled-input--full">
+			<h1>date</h1>
+			<input
+				class="{formatter.errorMessages.date ? 'invalid' : ''}"
+				bind:value={dateString}
+				on:blur={onDateSubmit}
+				on:keydown={onDateSubmit}
+				on:focus={selectInputEl}
+			/>
+			</div>
+			{#if formatter.errorMessages.date}
+				<p class="error-message">{formatter.errorMessages.date}</p>
+			{/if}
+		</article>
+		<article>
+			<div class="labelled-input--full">
+			<h1>locale</h1>
+			<input
+				class="{formatter.errorMessages.locale ? 'invalid' : ''}"
+				bind:value={locale}
+				on:blur={onLocaleSubmit}
+				on:keydown={onLocaleSubmit}
+				on:focus={selectInputEl}
+			/>
+			</div>
+			{#if formatter.errorMessages.locale}
+				<p class="error-message">{formatter.errorMessages.locale}</p>
+			{/if}
+		</article>
+		<article id="options" class="flex-grow overflow-auto">
+			<h1>options</h1>
+			<div id="options-list">
+				{#each Object.entries(OPTIONS.dates) as [, options], index}
+					{#each Object.entries(options) as [key, values]}
+						<div class="labelled-input">
+							<label for={`option-${key}`}>{key}</label>
+							{#if Array.isArray(values)}
+								<select
+									value={formatter.options[key] || 'undefined'}
+									id={`option-${key}`}
+									class="input"
+									on:change={e => selectOption(e, key)}
+								>
+									{#each values as value}
+										<option value={value}>{value}</option>
+									{/each}
+								</select>
+							{:else}
+								<input
+									value={formatter.options[key]}
+									type="text"
+									id={`option-${key}`}
+									on:blur={e => onOptionSubmit(e, key)}
+									on:keydown={e => onOptionSubmit(e, key)}
+									on:focus={selectInputEl}
+								/>
+							{/if}
+						</div>
+					{/each}
+					{#if index < Object.keys(OPTIONS.dates).length - 1}
+						<hr />
+					{/if}
+				{/each}
+			</div>
+		</article>
+	</div>
 </main>
 <footer>
-  Taylor Plewe, 2024 -&nbsp;<a href="https://github.com/taylorplewe/intlformat.me" target="_blank">GitHub repo</a>
+	Taylor Plewe, 2024 -&nbsp;<a href="https://github.com/taylorplewe/intlformat.me" target="_blank">GitHub repo</a>
 </footer>
