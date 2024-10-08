@@ -20,7 +20,7 @@ export default class Formatter {
 		};
 	}
 
-    get locale(): string | undefined {
+    get locale(): string {
         return this._getProcessedOutputString(this._locale);
     }
 	set locale(val: string) {
@@ -122,6 +122,6 @@ export default class Formatter {
 		}
 	}
 	_getProcessedOutputString(val: any): string {
-		return JSON.stringify(val);
+		return val === undefined ? 'undefined' : JSON.stringify(val);
 	}
 }
